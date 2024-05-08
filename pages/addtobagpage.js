@@ -3,11 +3,17 @@ const { By } = require("selenium-webdriver");
 const { assert } = require("chai");
 
 class BagMarketPage extends BasePage {
-  constructor(secondProduct, secondProductName) {
+  constructor() {
     super();
   }
 
   async open() {
+    await this.goToUrl("https://market.yandex.ru/");
+    await driver.manage().addCookie({
+      name: "spravka",
+      value:
+        "dD0xNzE0OTI1MDg0O2k9MjEyLjQ2LjEwLjg4O0Q9QkIxMjBCMjA1OUNBMjgxREFCNjRBN0EwNzRBQTRBMTY4RDczQTBCNjQ5QjE5Q0ZFQjgxNUU2RkREM0FBODkzODlFRjAyNUQ4NUZFMEU1RUU5Rjc4RkRDNDI4OTc0ODM5OTY4QUMwREFENzY5QTE5MTNEOURBMkE5RDdFOUU2QTQ2NERDMzREOTFFNTkwOEMwRjc2NTU4NTBEM0VFODA4RTdERThDRTlGNDI5ODQ1RjJBOTBGM0ZBM0I2O3U9MTcxNDkyNTA4NDQzNjA0MTY5MDtoPTg1NzQxN2M1ZjAxZDJkMTc5ZWU1ZDgzMzMyY2I5NGQ3",
+    });
     await this.goToUrl("https://market.yandex.ru/");
   }
 
@@ -45,79 +51,55 @@ class BagMarketPage extends BasePage {
   }
 
   async addSecondProductToBag() {
-    await this.clickCatalogButton();
-    await this.clickBigCategory();
-    await this.clickMediumCategory();
-    await this.clickSmallCategory();
     await this.click(
       By.xpath(
         "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//button[@aria-label='В корзину']"
       )
     );
-    assert.equal(
-      await driver.findElement(
-        By.xpath(
-          "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//button[@aria-label='В корзину']"
-        )
-      ),
-      false
-    );
-    assert.equal(
-      await driver.findElement(
-        By.xpath(
-          "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//span[contains(text(),'−')]"
-        )
-      ),
-      true
-    );
-    assert.equal(
-      await driver.findElement(
-        By.xpath(
-          "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//span[contains(text(),'+')]"
-        )
-      ),
-      true
-    );
-    assert.equal(
-      await driver.findElement(
-        By.xpath(
-          '//div[@data-auto="SerpList"]/child::div[position()=1]//ul//li[position()=2]//span[@class="_2cyeu"]'
-        )
-      ),
-      true
-    );
+  }
 
-    this.click(
+  async findSecondButtonBag() {
+    await driver.findElements(
+      By.xpath(
+        "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//button[@aria-label='В корзину']"
+      )
+    );
+  }
+
+  async clickProduct() {
+    await this.click(
       By.xpath("//ul[@class='_32QL9']//li[position()=4]//div[@class='Ebbtu']")
     );
-    const productInBagName = await driver.findElement(
+    this.productInBagName = await driver.findElement(
       By.xpath("//h3[@class='_3YHut _2SUA6 _33utW _13aK2 _1A5yJ']")
     );
-    assert.equal(productInBagName, this.secondProductName);
 
-    const productInBagPrice = await driver.findElement(
+    this.productInBagPrice = await driver.findElement(
       By.xpath(
         "//div[@class='_3gglc']//h3[@class='Jdxhz']//span[@class='_3gYEe']"
       )
     );
-    assert.equal(productInBagPrice, this.secondProductPrice);
-
-    const amountOfProducts = await driver.findElement(
-      By.xpath('//input[@aria-label="Количество товара"]')
-    );
-
-    assert.equal(await amountOfProducts.getAttribute("value"), "1");
-    this.click(By.xpath("//button[@aria-label='Увеличить']"));
-    assert.equal(await amountOfProducts.getAttribute("value"), "2");
-
-    this.click(By.xpath("//div[@class='_1AwVK']"));
-    const message = await driver.findElement(
-      By.xpath('//span[@class="_2GVF8 _2SUA6 _33utW IFARr"]')
-    );
-
-    assert.equal(await message.getText, "Войдите в аккаунт");
   }
 
+  async findAmountOfProducts() {
+    this.amountOfProducts = await driver.findElement(
+      By.xpath('//input[@aria-label="Количество товара"]')
+    );
+  }
+
+  async increaseAmount() {
+    this.click(By.xpath("//button[@aria-label='Увеличить']"));
+    this.amountOfProducts = await driver.findElement(
+      By.xpath('//input[@aria-label="Количество товара"]')
+    );
+  }
+
+  async clickCross() {
+    await this.click(By.xpath("//button[@class='_2AXg- _1HZDF']"));
+    this.message = await driver.findElement(
+      By.xpath('//span[@class="_2GVF8 _2SUA6 _33utW IFARr"]')
+    );
+  }
   async logFirstFiveProducts() {
     await this.clickCatalogButton();
     await this.clickBigCategory();
