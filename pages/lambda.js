@@ -27,7 +27,7 @@ class LambdaPage extends BasePage {
   }
 
   async isItemNotActive(item) {
-    return (await item.getAttribute("class")) === "done-false";
+    return (await item.ibute("class")) === "done-false";
   }
 
   async clickItem(item) {

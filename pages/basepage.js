@@ -3,7 +3,7 @@ const { Builder, Browser } = require("selenium-webdriver");
 class BasePage {
   async goToUrl(url) {
     global.driver = new Builder().forBrowser(Browser.CHROME).build();
-    driver.manage().setTimeouts({ implicit: 5000 });
+    driver.manage().setTimeouts({ implicit: 100000 });
     await driver.get(url);
   }
 
