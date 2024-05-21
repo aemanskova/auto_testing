@@ -15,6 +15,7 @@ class BagMarketPage extends BasePage {
         "dD0xNzE0OTI1MDg0O2k9MjEyLjQ2LjEwLjg4O0Q9QkIxMjBCMjA1OUNBMjgxREFCNjRBN0EwNzRBQTRBMTY4RDczQTBCNjQ5QjE5Q0ZFQjgxNUU2RkREM0FBODkzODlFRjAyNUQ4NUZFMEU1RUU5Rjc4RkRDNDI4OTc0ODM5OTY4QUMwREFENzY5QTE5MTNEOURBMkE5RDdFOUU2QTQ2NERDMzREOTFFNTkwOEMwRjc2NTU4NTBEM0VFODA4RTdERThDRTlGNDI5ODQ1RjJBOTBGM0ZBM0I2O3U9MTcxNDkyNTA4NDQzNjA0MTY5MDtoPTg1NzQxN2M1ZjAxZDJkMTc5ZWU1ZDgzMzMyY2I5NGQ3",
     });
     await this.goToUrl("https://market.yandex.ru/");
+    driver.manage().window().maximize();
   }
 
   async checkHeader(header) {
@@ -54,6 +55,24 @@ class BagMarketPage extends BasePage {
     await this.click(
       By.xpath(
         "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//button[@aria-label='В корзину']"
+      )
+    );
+
+    this.plusBtn = await driver.findElements(
+      By.xpath(
+        "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//span[contains(text(),'+')]"
+      )
+    );
+
+    this.minusBtn = await driver.findElements(
+      By.xpath(
+        "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//span[contains(text(),'−')]"
+      )
+    );
+
+    this.record = await driver.findElements(
+      By.xpath(
+        '//div[@data-auto="SerpList"]/child::div[position()=1]//ul//li[position()=2]//span[@class="_2cyeu"]'
       )
     );
   }

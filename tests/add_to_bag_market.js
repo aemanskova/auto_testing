@@ -26,43 +26,16 @@ mocha.describe("Yandex Market Add to bag test", function () {
 
     await allure.step("log products", async function () {
       await ybp.logFirstFiveProducts();
+
       console.log(ybp.secondProductName);
     });
 
     await allure.step("add second product to bag", async function () {
       await ybp.addSecondProductToBag();
-      await driver
-        .findElements(
-          By.xpath(
-            "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//button[@aria-label='В корзину']"
-          )
-        )
-        .then((elements) => assert.equal(elements.length, 0));
-      await driver
-        .findElements(
-          By.xpath(
-            "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//span[contains(text(),'+')]"
-          )
-        )
-        .then((elements) => assert.equal(elements.length, 1));
-      await driver
-        .findElements(
-          By.xpath(
-            "//div[@data-auto='SerpList']/child::div[position()=1]//ul//li[position()=2]//span[contains(text(),'−')]"
-          )
-        )
-        .then((elements) => assert.equal(elements.length, 1));
-
-      await driver
-        .findElements(
-          By.xpath(
-            '//div[@data-auto="SerpList"]/child::div[position()=1]//ul//li[position()=2]//span[@class="_2cyeu"]'
-          )
-        )
-        .then((elements) => assert.equal(elements.length, 1));
+      assert.equal(ybp.plusBtn.length, 1);
+      assert.equal(ybp.minusBtn.length, 1);
+      assert.equal(ybp.record.length, 1);
       await ybp.clickProduct();
-      // assert.equal(ybp.productInBagName, ybp.secondProductName);
-      // assert.equal(ybp.productInBagPrice, ybp.secondProductPrice);
       await ybp.findAmountOfProducts();
       assert.equal(await ybp.amountOfProducts.getAttribute("value"), "1");
       await ybp.increaseAmount();

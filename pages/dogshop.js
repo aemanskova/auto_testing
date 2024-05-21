@@ -1,9 +1,19 @@
 const BasePage = require("../pages/basepage");
 const { By, Key } = require("selenium-webdriver");
+const path = require("path");
+const fs = require("fs");
 
 class MyPage extends BasePage {
   async open() {
     await this.goToUrl("https://barq.ru/");
+    driver.manage().window().maximize();
+  }
+
+  async takeScreenshot(driver, filename) {
+    let screenshot = await driver.takeScreenshot();
+    let screenshotPath = path.join(__dirname, filename);
+    fs.writeFileSync(screenshotPath, screenshot, "base64");
+    return screenshotPath;
   }
 
   async goToForDogsPage() {
@@ -29,6 +39,14 @@ class MyPage extends BasePage {
         "//div[@class='js-store-grid-cont t-store__grid-cont t-container t-store__grid-cont_mobile-one-row']/child::div[position()=1]//a[@href='#addtofavorites']"
       )
     );
+
+    this.addToFavouriteBtnShowed = await driver.findElements(
+      By.xpath(
+        "//div[@class='t1002__wishlisticon t1002__wishlisticon_sm t1002__wishlisticon_showed']"
+      )
+    );
+    console.log(this.addToFavouriteBtnShowed.length);
+
     this.btn = await driver.findElement(
       By.xpath(
         "//div[@class='js-store-grid-cont t-store__grid-cont t-container t-store__grid-cont_mobile-one-row']/child::div[position()=1]//a[@href='#addtofavorites']"
@@ -50,9 +68,18 @@ class MyPage extends BasePage {
       )
     );
 
-    this.favouritesTitle = await driver.findElement(
+    const favouritesTitle = await driver.findElement(
       By.xpath("//div[@class='t1002__wishlistwin-heading t-name t-name_xl']")
     );
+
+    this.favouritesTitleName = await favouritesTitle.getText();
+  }
+
+  async findFavourite() {
+    const favourite = await driver.findElement(
+      By.xpath("//a[@class='t1002__product-link']")
+    );
+    this.favouriteName = await favourite.getText();
   }
 
   async closeFavourites() {
